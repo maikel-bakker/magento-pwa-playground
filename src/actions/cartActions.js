@@ -34,53 +34,44 @@ export function postCart(product, quoteId) {
     }
 }
 
+export function fetchQuote() {
+    return (dispatch) => {
+        dispatch({
+            type: 'GET_QUOTE'
+        });
+        fetch('http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/guest-carts/', {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json'}
+        })
+        .then(function (res) {
+            var data = Promise.resolve(res.json());
+            data.then(function(data) {
+                localStorage.setItem('quoteId', data);
+                dispatch({
+                    type: 'GET_QUOTE_FULFILLED',
+                    payload: data
+                });
+            });
+        })
+        .catch(function (error) {
+            dispatch({
+                type: 'GET_QUOTE_REJECTED',
+                payload: error
+            })
+        });
+    }
+}
+
 export function getQuote() {
     return (dispatch) => {
         if (!localStorage.getItem('quoteId')) {
-            dispatch({
-                type: 'GET_QUOTE'
-            });
-            fetch('http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/guest-carts/', {
-                method: 'POST',
-                headers: { 'Content-Type':'application/json'}
-            })
-            .then(function (res) {
-                var data = Promise.resolve(res.json());
-                data.then(function(data) {
-                    localStorage.setItem('quoteId', data);
-                    dispatch({
-                        type: 'GET_QUOTE_FULFILLED',
-                        payload: data
-                    });
-                });
-            })
-            .catch(function (error) {
-                dispatch({
-                    type: 'GET_QUOTE_REJECTED',
-                    payload: error
-                })
-            });
+            dispatch(fetchQuote());
         } else {
             dispatch({
                 type: 'GET_QUOTE_FULFILLED',
                 payload: localStorage.getItem('quoteId')
             });
-            fetch('http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/guest-carts/' + localStorage.getItem('quoteId') + '/items')
-            .then(function (res) {
-                var data = Promise.resolve(res.json());
-                data.then(function(data) {
-                    dispatch({
-                        type: 'FETCH_CART_FULFILLED',
-                        payload: data
-                    });
-                });
-            })
-            .catch(function (error) {
-                dispatch({
-                    type: 'FETCH_CART_REJECTED',
-                    payload: error
-                })
-            });
+            dispatch(fetchCart(localStorage.getItem('quoteId')));
         }
     }
 }
