@@ -1,0 +1,42 @@
+a.active{
+    color: #000000 !important;
+    text-decoration: underline !important;
+}
+
+.example-enter {
+    opacity: 0.01;
+}
+
+.example-enter.example-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}
+
+.example-leave {
+    opacity: 1;
+}
+
+.example-leave.example-leave-active {
+    opacity: 0.01;
+    transition: opacity 300ms ease-in;
+}
+
+.fade-appear,
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-appear-active,
+.fade-enter-active {
+    transition: opacity .3s linear;
+    opacity: 1;
+}
+
+.fade-exit {
+    transition: opacity .2s linear;
+    opacity: 1;
+}
+
+.fade-exit-active {
+    opacity: 0;
+}

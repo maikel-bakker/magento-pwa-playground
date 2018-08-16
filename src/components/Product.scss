@@ -1,0 +1,9 @@
+.product-gallery {
+    &__image {
+        max-width: 100%;
+
+        &:nth-child(2n) {
+            display: none;
+        }
+    }
+}
