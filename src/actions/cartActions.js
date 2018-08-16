@@ -7,44 +7,39 @@ export function postCart(product, quoteId) {
                 "quote_id"  : quoteId
             }
         }
+        dispatch({
+            type: 'ADD_CART'
+        });
         fetch('http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/guest-carts/' + quoteId + '/items', {
             method: 'POST',
             headers: { 'Content-Type':'application/json'},
             body: JSON.stringify(productObj)
         })
-            .then(function (res) {
-                var data = Promise.resolve(res.json());
-                data.then(function(data) {
-                    fetch('http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/guest-carts/' + quoteId + '/items')
-                        .then(function (res) {
-                            var data = Promise.resolve(res.json());
-                            data.then(function(data) {
-                                dispatch({
-                                    type: 'ADD_CART_FULFILLED',
-                                    payload: data
-                                });
-                            });
-                        })
-                        .catch(function (error) {
-                            dispatch({
-                                type: 'ADD_CART_REJECTED',
-                                payload: error
-                            })
-                        });
-                });
-            })
-            .catch(function (error) {
+        .then(function (res) {
+            var data = Promise.resolve(res);
+            data.then(() => {
                 dispatch({
-                    type: 'ADD_CART_REJECTED',
-                    payload: error
-                })
+                    type: 'ADD_CART_FULFILLED',
+                    payload: data
+                });
+                dispatch(fetchCart(quoteId));
             });
+        })
+        .catch(function (error) {
+            dispatch({
+                type: 'ADD_CART_REJECTED',
+                payload: error
+            })
+        });
     }
 }
 
 export function getQuote() {
     return (dispatch) => {
         if (!localStorage.getItem('quoteId')) {
+            dispatch({
+                type: 'GET_QUOTE'
+            });
             fetch('http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/guest-carts/', {
                 method: 'POST',
                 headers: { 'Content-Type':'application/json'}
