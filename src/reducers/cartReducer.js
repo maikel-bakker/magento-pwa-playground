@@ -34,6 +34,7 @@ export default function cart(state = initialState, action) {
             
             return newState;
         }
+        
         case "ADD_CART": {
             return {
                 ...state,
@@ -57,6 +58,31 @@ export default function cart(state = initialState, action) {
                 cart: [...state.cart, action.payload]
             }
             return newState;
+        }
+
+        case "ADD_CART_FULFILLED_OFFLINE": {
+            //check if product is already in cart
+            var productInCart = false;
+            state.cart.forEach(element => {
+                if (element.sku == action.payload.sku) {
+                    element.qty += action.payload.qty;
+                    productInCart = true;
+                    return true;
+                }
+            });
+
+            console.log(state.cart);
+            
+            if (productInCart) {
+                return {
+                    ...state
+                }
+            } else {
+                return {
+                    ...state,
+                    cart: [...state.cart, action.payload]
+                }
+            }
         }
 
         case "GET_QUOTE": {

@@ -314,81 +314,87 @@ module.exports = {
     new ManifestPlugin({
       fileName: 'asset-manifest.json',
     }),
-    new WorkboxWebpackPlugin.GenerateSW({
+    new WorkboxWebpackPlugin.InjectManifest({
+      swSrc: './src/sw.js',
       swDest: 'service-worker.js',
+      importWorkboxFrom: 'cdn',
       exclude: [/\.map$/, /^(?:asset-)manifest.*\.js(?:on)?$/],
-      clientsClaim: true,
-      skipWaiting: true,
-      dontCacheBustUrlsMatching: /\.\w{8}\./,
-      navigateFallback: publicUrl + '/index.html',
-      navigateFallbackWhitelist: [/^(?!\/__).*/],
-      runtimeCaching: [{
-        urlPattern: new RegExp('^http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/categories'),
-        handler: 'staleWhileRevalidate',
-        options: {
-          cacheName: 'categories-cache',
-          expiration: {
-            maxEntries: 10,
-          }
-        }
-      },
-      {
-        urlPattern: new RegExp('^http://m2angular.nl.sandbox20.xpdev.nl/angular.php'),
-        handler: 'staleWhileRevalidate',
-        options: {
-          cacheName: 'products-cache',
-          expiration: {
-            maxEntries: 50,
-          }
-        }
-      },
-      {
-        urlPattern: new RegExp('^http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/products'),
-        handler: 'staleWhileRevalidate',
-        options: {
-          cacheName: 'products-cache',
-          expiration: {
-            maxEntries: 50,
-          }
-        }
-      },
-      {
-        urlPattern: new RegExp('^http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/guest-carts'),
-        handler: 'staleWhileRevalidate',
-        options: {
-          cacheName: 'cart-cache',
-          expiration: {
-            maxEntries: 50,
-          }
-        }
-      },
-      {
-        urlPattern: new RegExp('^http://m2angular.nl.sandbox20.xpdev.nl/pub/media/'),
-        handler: 'cacheFirst',
-        options: {
-          cacheName: 'media-cache',
-          expiration: {
-            maxEntries: 20,
-          },
-          cacheableResponse: {
-            statuses: [0, 200]
-          }
-        }
-      },
-      {
-        urlPattern: new RegExp('https://fonts.(?:googleapis|gstatic).com/(.*)'),
-        handler: 'cacheFirst',
-        options: {
-          cacheName: 'google-fonts',
-          expiration: {
-            maxEntries: 20,
-          },
-          cacheableResponse: {
-            statuses: [0, 200]
-          }
-        }
-      }]
     }),
+    // new WorkboxWebpackPlugin.GenerateSW({
+    //   swDest: 'service-worker.js',
+    //   exclude: [/\.map$/, /^(?:asset-)manifest.*\.js(?:on)?$/],
+    //   clientsClaim: true,
+    //   skipWaiting: true,
+    //   dontCacheBustUrlsMatching: /\.\w{8}\./,
+    //   navigateFallback: publicUrl + '/index.html',
+    //   navigateFallbackWhitelist: [/^(?!\/__).*/],
+    //   runtimeCaching: [{
+    //     urlPattern: new RegExp('^http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/categories'),
+    //     handler: 'staleWhileRevalidate',
+    //     options: {
+    //       cacheName: 'categories-cache',
+    //       expiration: {
+    //         maxEntries: 10,
+    //       }
+    //     }
+    //   },
+    //   {
+    //     urlPattern: new RegExp('^http://m2angular.nl.sandbox20.xpdev.nl/angular.php'),
+    //     handler: 'staleWhileRevalidate',
+    //     options: {
+    //       cacheName: 'products-cache',
+    //       expiration: {
+    //         maxEntries: 50,
+    //       }
+    //     }
+    //   },
+    //   {
+    //     urlPattern: new RegExp('^http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/products'),
+    //     handler: 'staleWhileRevalidate',
+    //     options: {
+    //       cacheName: 'products-cache',
+    //       expiration: {
+    //         maxEntries: 50,
+    //       }
+    //     }
+    //   },
+    //   {
+    //     urlPattern: new RegExp('^http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/guest-carts'),
+    //     handler: 'staleWhileRevalidate',
+    //     options: {
+    //       cacheName: 'cart-cache',
+    //       expiration: {
+    //         maxEntries: 50,
+    //       }
+    //     }
+    //   },
+    //   {
+    //     urlPattern: new RegExp('^http://m2angular.nl.sandbox20.xpdev.nl/pub/media/'),
+    //     handler: 'cacheFirst',
+    //     options: {
+    //       cacheName: 'media-cache',
+    //       expiration: {
+    //         maxEntries: 20,
+    //       },
+    //       cacheableResponse: {
+    //         statuses: [0, 200]
+    //       }
+    //     }
+    //   },
+    //   {
+    //     urlPattern: new RegExp('https://fonts.(?:googleapis|gstatic).com/(.*)'),
+    //     handler: 'cacheFirst',
+    //     options: {
+    //       cacheName: 'google-fonts',
+    //       expiration: {
+    //         maxEntries: 20,
+    //       },
+    //       cacheableResponse: {
+    //         statuses: [0, 200]
+    //       }
+    //     }
+    //   }]
+    // }),
     // Moment.js is an extremely popular library that bundles large locale files
     // by default due to how Webpack interprets its code. This is a practical
     // solution that requires the user to opt into importing specific locales.

@@ -7,6 +7,9 @@ export function postCart(product, quoteId) {
                 "quote_id"  : quoteId
             }
         }
+
+        dispatch(postCartOffline(product, quoteId));
+
         dispatch({
             type: 'ADD_CART'
         });
@@ -29,7 +32,25 @@ export function postCart(product, quoteId) {
             dispatch({
                 type: 'ADD_CART_REJECTED',
                 payload: error
-            })
+            });
+        });
+    }
+}
+
+export function postCartOffline(product, quoteId, qty) {
+    return (dispatch) => {
+        const productObj = {
+            item_id: product.id,
+            name: product.name,
+            price: product.price,
+            product_type: 'simple',
+            qty: qty ? qty : 1,
+            quote_id: quoteId,
+            sku: product.sku
+        }
+        dispatch({
+            type: 'ADD_CART_FULFILLED_OFFLINE',
+            payload: productObj
         });
     }
 }
@@ -80,20 +101,21 @@ export function fetchCart(quoteId) {
     return (dispatch) => {
 
         fetch('http://m2angular.nl.sandbox20.xpdev.nl/index.php/rest/V1/guest-carts/' + quoteId + '/items')
-            .then(function (res) {
-                var data = Promise.resolve(res.json());
-                data.then(function(data) {
-                    dispatch({
-                        type: 'FETCH_CART_FULFILLED',
-                        payload: data
-                    });
-                });
-            })
-            .catch(function (error) {
+        .then(function (res) {
+            var data = Promise.resolve(res.json());
+            data.then(function(data) {
                 dispatch({
-                    type: 'FETCH_CART_REJECTED',
-                    payload: error
-                })
+                    type: 'FETCH_CART_FULFILLED',
+                    payload: data
+                });
             });
+        })
+        .catch(function (error) {
+            dispatch({
+                type: 'FETCH_CART_REJECTED',
+                payload: error
+            })
+        });
     }
 }
+
