@@ -71,8 +71,6 @@ export default function cart(state = initialState, action) {
                 }
             });
 
-            console.log(state.cart);
-            
             if (productInCart) {
                 return {
                     ...state
